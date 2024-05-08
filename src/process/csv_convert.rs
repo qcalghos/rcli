@@ -1,8 +1,7 @@
+use crate::cli::OutputFormat;
 use anyhow::Result;
 use csv::Reader;
 use std::fs;
-use crate::opts::OutputFormat;
-
 
 //convert csv to json
 pub fn process_csv(input: &str, output: &str, format: OutputFormat) -> Result<()> {

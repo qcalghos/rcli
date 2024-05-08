@@ -42,7 +42,7 @@ pub fn process_genpass(
     let password = String::from_utf8(password)?;
     println!("{}", password);
     //在stderr中打印密码强度
-    let result=zxcvbn(&password, &[])?;
-    eprintln!("密码强度:{}",result.score());
+    let result = zxcvbn(&password, &[])?;
+    eprintln!("密码强度:{}", result.score());
     Ok(())
 }

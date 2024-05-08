@@ -1,24 +1,33 @@
-# Rust cli:generate simple password
+# Rust cli:base64编码和解码
 
 ## 运行方式
 
-### 执行命令
+### 执行base encode
 
 ```bash
-cargo run -- genpass -l 16 --no-uppercase
-生成密码:
-    -?h8=#tdx*-2;^3(
+cargo run -- base64 encode
+win10下用回车，ctrl+z结束输入。
+
 ```
 
 ```bash
+cargo run -- base64 encode --format urlsafe
 
-cargo run -- genpass -l 16
-生成密码:
-    #WVmBC5M/Z$2vP7y
 ```
 
 ```bash
-cargo run -- genpass -l 16 --no-uppercase --no-number
-生成密码:
-    wj/ddj{_ndkjt)?k
+cargo run -- base64 encode --input .\Cargo.toml 
+cargo run -- base64 encode --input .\Cargo.toml >b64.txt
+
+```
+### 执行base decode
+
+```bash
+cargo run -- base64 decode
+cargo run -- base64 decode --format urlsafe
+cargo run -- base64 decode --input b64.txt
+```
+### 执行单元测试
+```bash
+ cargo nextest run  -- test_process_decode
 ```
