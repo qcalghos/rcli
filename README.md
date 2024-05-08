@@ -17,6 +17,7 @@ cargo run -- genpass -l 16
     #WVmBC5M/Z$2vP7y
 ```
 
+```bash
 cargo run -- genpass -l 16 --no-uppercase --no-number
 生成密码:
     wj/ddj{_ndkjt)?k
