@@ -5,6 +5,19 @@
 ### 执行命令
 
 ```bash
-cargo run -- csv -i .\assets\juventus.csv
- cargo run -- csv  -i .\assets\juventus.csv  -o test.yaml -f yaml
+cargo run -- genpass -l 16 --no-uppercase
+生成密码:
+    -?h8=#tdx*-2;^3(
+```
+
+```bash
+
+cargo run -- genpass -l 16
+生成密码:
+    #WVmBC5M/Z$2vP7y
+```
+
+cargo run -- genpass -l 16 --no-uppercase --no-number
+生成密码:
+    wj/ddj{_ndkjt)?k
 ```
