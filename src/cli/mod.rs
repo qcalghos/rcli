@@ -1,10 +1,12 @@
 mod base64;
 mod csv;
 mod gen_pass;
+mod text;
 
 pub use self::base64::Base64Format;
 pub use self::base64::Base64SubCommand;
 pub use self::csv::OutputFormat;
+pub use self::text::{TextSigFormat, TextSubCommand};
 use self::{csv::CsvOpts, gen_pass::GenPassOpts};
 use ::clap::Parser;
 use std::path::Path;
@@ -23,9 +25,11 @@ pub enum SubCommand {
     GenPass(GenPassOpts),
     #[command(subcommand)]
     Base64(Base64SubCommand),
+    #[command(subcommand)]
+    Text(TextSubCommand),
 }
 
-fn verify_input_file(filename: &str) -> Result<String, &'static str> {
+fn verify_file(filename: &str) -> Result<String, &'static str> {
     //判断file是否存在，或者为 "-"
 
     if filename == "-" || Path::new(filename).exists() {
@@ -39,9 +43,9 @@ mod tests {
     use super::*;
     #[test]
     fn test_verify_input_file() {
-        assert_eq!(verify_input_file("-"), Ok("-".into()));
-        assert_eq!(verify_input_file("*"), Err("File does not exit."));
-        assert_eq!(verify_input_file("./Cargo.toml"), Ok("./Cargo.toml".into()));
-        assert_eq!(verify_input_file("no-exist"), Err("File does not exit."));
+        assert_eq!(verify_file("-"), Ok("-".into()));
+        assert_eq!(verify_file("*"), Err("File does not exit."));
+        assert_eq!(verify_file("./Cargo.toml"), Ok("./Cargo.toml".into()));
+        assert_eq!(verify_file("no-exist"), Err("File does not exit."));
     }
 }

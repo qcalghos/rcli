@@ -2,32 +2,19 @@
 
 ## 运行方式
 
-### 执行base encode
+### 签名
 
 ```bash
-cargo run -- base64 encode
-win10下用回车，ctrl+z结束输入。
+ cargo run -- text sign  -k .\fixtures\blake3.txt
 
 ```
 
 ```bash
-cargo run -- base64 encode --format urlsafe
+cargo run -- text verify --key pk.pem
 
 ```
 
 ```bash
-cargo run -- base64 encode --input .\Cargo.toml 
-cargo run -- base64 encode --input .\Cargo.toml >b64.txt
+cargo run -- text generate-key
 
-```
-### 执行base decode
-
-```bash
-cargo run -- base64 decode
-cargo run -- base64 decode --format urlsafe
-cargo run -- base64 decode --input b64.txt
-```
-### 执行单元测试
-```bash
- cargo nextest run  -- test_process_decode
 ```
