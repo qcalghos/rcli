@@ -35,7 +35,7 @@ pub struct TextVerifyOpts {
 }
 #[derive(Debug, Parser)]
 pub struct GenerateOpts {}
-#[derive(Debug, Parser,Clone,Copy)]
+#[derive(Debug, Parser, Clone, Copy)]
 pub enum TextSigFormat {
     Blake3,
     Ed25519,
@@ -49,7 +49,7 @@ impl FromStr for TextSigFormat {
         match s {
             "blake3" => Ok(TextSigFormat::Blake3),
             "ed25519" => Ok(TextSigFormat::Ed25519),
-            _=>Err(anyhow!("Invalid format."))
+            _ => Err(anyhow!("Invalid format.")),
         }
     }
 }
@@ -63,6 +63,6 @@ impl From<TextSigFormat> for &'static str {
 }
 impl fmt::Display for TextSigFormat {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f,"{}",Into::<&'static str>::into(*self))
+        write!(f, "{}", Into::<&'static str>::into(*self))
     }
 }
