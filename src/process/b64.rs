@@ -5,7 +5,7 @@ use base64::{
     Engine as _,
 };
 
-pub fn process_encode(input: &str, format: Base64Format) -> Result<()> {
+pub fn process_encode(input: &str, format: Base64Format) -> Result<String> {
     println!("input:{},format:{}", input, format);
     //使用box处理不同返回类型
     let mut reader = get_reader(input)?;
@@ -13,15 +13,13 @@ pub fn process_encode(input: &str, format: Base64Format) -> Result<()> {
     reader.read_to_end(&mut buf)?;
     let encoded = match format {
         Base64Format::Standard => {
-            println!("1");
             STANDARD.encode(&buf)
         }
         Base64Format::UrlSafe => URL_SAFE_NO_PAD.encode(&buf),
     };
-    println!("{}", encoded);
-    Ok(())
+    Ok(encoded)
 }
-pub fn process_decode(input: &str, format: Base64Format) -> Result<()> {
+pub fn process_decode(input: &str, format: Base64Format) -> Result<Vec<u8>> {
     let mut reader = get_reader(input)?;
     let mut buf = String::new();
     reader.read_to_string(&mut buf)?;
@@ -30,10 +28,7 @@ pub fn process_decode(input: &str, format: Base64Format) -> Result<()> {
         Base64Format::Standard => STANDARD.decode(buf)?,
         Base64Format::UrlSafe => URL_SAFE_NO_PAD.decode(buf)?,
     };
-    //TODO:判断decode出来的数据是否为字符串
-    let decoded = String::from_utf8(decoded)?;
-    println!("{}", decoded);
-    Ok(())
+    Ok(decoded)
 }
 
 #[cfg(test)]

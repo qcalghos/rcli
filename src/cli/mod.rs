@@ -10,6 +10,7 @@ pub use self::text::{TextSigFormat, TextSubCommand};
 use self::{csv::CsvOpts, gen_pass::GenPassOpts};
 use ::clap::Parser;
 use std::path::Path;
+use std::path::PathBuf;
 #[derive(Debug, Parser)]
 #[command(name="rcli",version,author,about,long_about=None)]
 pub struct Opts {
@@ -36,6 +37,14 @@ fn verify_file(filename: &str) -> Result<String, &'static str> {
         Ok(filename.into())
     } else {
         Err("File does not exit.")
+    }
+}
+fn verify_path(path:&str)->Result<PathBuf,&'static str>{
+    let p=Path::new(path);
+    if p.exists() && p.is_dir() {
+        Ok(path.into())
+    }else{
+        Err("File does not exit")
     }
 }
 #[cfg(test)]

@@ -1,7 +1,8 @@
-use super::verify_file;
+use super::{verify_file,verify_path};
 use anyhow::anyhow;
 use clap::Parser;
 use std::fmt;
+use std::path::PathBuf;
 use std::str::FromStr;
 
 #[derive(Debug, Parser)]
@@ -11,7 +12,7 @@ pub enum TextSubCommand {
     #[command(name = "verify", about = "Verify a signed message.")]
     Verify(TextVerifyOpts),
     #[command(name = "generate", about = "Generate a key.")]
-    Generate(GenerateOpts),
+    Generate(TextKeyGenerateOpts),
 }
 #[derive(Debug, Parser)]
 pub struct TextSignOpts {
@@ -34,7 +35,12 @@ pub struct TextVerifyOpts {
     pub format: TextSigFormat,
 }
 #[derive(Debug, Parser)]
-pub struct GenerateOpts {}
+pub struct TextKeyGenerateOpts {
+    #[arg(short,long,default_value="blake3",value_parser=parse_format)]
+    pub format:TextSigFormat,
+    #[arg(short,long,default_value="",value_parser=verify_path)]
+    pub output:PathBuf,//输出路径
+}
 #[derive(Debug, Parser, Clone, Copy)]
 pub enum TextSigFormat {
     Blake3,
@@ -66,3 +72,4 @@ impl fmt::Display for TextSigFormat {
         write!(f, "{}", Into::<&'static str>::into(*self))
     }
 }
+

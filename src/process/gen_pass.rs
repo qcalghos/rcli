@@ -1,6 +1,5 @@
 use anyhow::Result;
 use rand::seq::SliceRandom;
-use zxcvbn::zxcvbn;
 
 //生成const时候需要声明类型。
 const UPPER: &[u8] = b"ABCDEFGHJKLMNPQRSTUVWXYZ";
@@ -13,7 +12,7 @@ pub fn process_genpass(
     no_lower: bool,
     no_number: bool,
     no_symbol: bool,
-) -> Result<()> {
+) -> Result<String> {
     let mut rng = rand::thread_rng();
     let mut password = Vec::new();
     let mut chars = Vec::new();
@@ -40,9 +39,5 @@ pub fn process_genpass(
 
     password.shuffle(&mut rng);
     let password = String::from_utf8(password)?;
-    println!("{}", password);
-    //在stderr中打印密码强度
-    let result = zxcvbn(&password, &[])?;
-    eprintln!("密码强度:{}", result.score());
-    Ok(())
+    Ok(password)
 }
