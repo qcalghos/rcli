@@ -3,11 +3,15 @@ use std::fs;
 use anyhow::Result;
 use clap::Parser;
 use rcli::{
-    cli::{Base64SubCommand, Opts, SubCommand}, process_csv, process_decode, process_encode, process_genpass, process_text_generate, process_text_sign, process_text_verify, TextSigFormat, TextSubCommand
+    cli::{Base64SubCommand, HttpSubCommand, Opts, SubCommand},
+    process_csv, process_decode, process_encode, process_genpass, process_http_serve,
+    process_text_generate, process_text_sign, process_text_verify, TextSigFormat, TextSubCommand,
 };
 use zxcvbn::zxcvbn;
 
-fn main() -> Result<()> {
+#[tokio::main]
+async fn main() -> Result<()> {
+    tracing_subscriber::fmt::init();
     let cli = Opts::parse();
     // println!("{:?}", cli);
     match cli.cmd {
@@ -56,17 +60,23 @@ fn main() -> Result<()> {
             }
             TextSubCommand::Generate(opts) => {
                 let keys = process_text_generate(opts.format)?;
-                match opts.format{
-                    TextSigFormat::Blake3=>{
-                        let name=opts.output.join("blake3.txt");
+                match opts.format {
+                    TextSigFormat::Blake3 => {
+                        let name = opts.output.join("blake3.txt");
                         fs::write(name, &keys[0])?;
                     }
-                    TextSigFormat::Ed25519=>{
-                        let name=&opts.output;
+                    TextSigFormat::Ed25519 => {
+                        let name = &opts.output;
                         fs::write(name.join("ed25519.sk"), &keys[0])?;
                         fs::write(name.join("ed25519.pk"), &keys[1])?;
                     }
                 }
+            }
+        },
+        SubCommand::Http(subcmd) => match subcmd {
+            HttpSubCommand::Serve(opts) => {
+                // println!("Serving at http://0.0.0.0:{}", opts.port);
+                process_http_serve(opts.directory,opts.port).await?
             }
         },
     }
