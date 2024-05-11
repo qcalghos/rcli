@@ -1,0 +1,16 @@
+### test index page
+
+GET http://localhost:8080/Cargo.toml
+
+###
+
+GET http://localhost:8080/Cargo.toml
+Accept-Content-Type: gzip
+Range:bytes=0-100
+
+
+###
+http://localhost:8080/tower/fixtures/
+
+###
+GET http://localhost:8080/tower/fixtures/ed25519.pk
