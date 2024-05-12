@@ -2,7 +2,6 @@ mod b64;
 mod csv_convert;
 mod gen_pass;
 mod http_serve;
-mod simple_http_serve;
 mod text;
 
 pub use b64::{process_decode, process_encode};

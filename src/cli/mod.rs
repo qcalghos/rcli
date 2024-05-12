@@ -1,14 +1,16 @@
 mod base64;
 mod csv;
 mod gen_pass;
-mod text;
 mod http;
+mod text;
+
+use crate::CmdExector;
 
 pub use self::base64::Base64Format;
 pub use self::base64::Base64SubCommand;
 pub use self::csv::OutputFormat;
-pub use self::text::{TextSigFormat, TextSubCommand};
 pub use self::http::HttpSubCommand;
+pub use self::text::{TextSigFormat, TextSubCommand};
 use self::{csv::CsvOpts, gen_pass::GenPassOpts};
 use ::clap::Parser;
 use std::path::Path;
@@ -26,14 +28,24 @@ pub enum SubCommand {
     Csv(CsvOpts),
     #[command(name = "genpass", about = "Generate a random password")]
     GenPass(GenPassOpts),
-    #[command(subcommand)]
+    #[command(subcommand, about = "Base64 encode/decode")]
     Base64(Base64SubCommand),
-    #[command(subcommand)]
+    #[command(subcommand, about = "Text sign/verify")]
     Text(TextSubCommand),
-    #[command(subcommand)]
+    #[command(subcommand, about = "HTTP server")]
     Http(HttpSubCommand),
 }
-
+impl CmdExector for SubCommand {
+    async fn execute(self) -> anyhow::Result<()> {
+        match self {
+            SubCommand::Base64(cmd) => cmd.execute().await,
+            SubCommand::Csv(opts) => opts.execute().await,
+            SubCommand::GenPass(opts) => opts.execute().await,
+            SubCommand::Http(cmd) => cmd.execute().await,
+            SubCommand::Text(cmd) => cmd.execute().await,
+        }
+    }
+}
 fn verify_file(filename: &str) -> Result<String, &'static str> {
     //判断file是否存在，或者为 "-"
 
@@ -43,11 +55,11 @@ fn verify_file(filename: &str) -> Result<String, &'static str> {
         Err("File does not exit.")
     }
 }
-fn verify_path(path:&str)->Result<PathBuf,&'static str>{
-    let p=Path::new(path);
+fn verify_path(path: &str) -> Result<PathBuf, &'static str> {
+    let p = Path::new(path);
     if p.exists() && p.is_dir() {
         Ok(path.into())
-    }else{
+    } else {
         Err("File does not exit")
     }
 }

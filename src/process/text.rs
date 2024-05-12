@@ -19,8 +19,8 @@ pub trait TextVerify {
     //等价于 fn verify<R:Read>(&self,reader:R,sig:&[u8])
     fn verify(&self, reader: impl Read, sig: &[u8]) -> Result<bool>;
 }
-pub trait KeyGenerator{
-    fn generate()->Result<Vec<Vec<u8>>>;
+pub trait KeyGenerator {
+    fn generate() -> Result<Vec<Vec<u8>>>;
 }
 pub trait KeyLoader
 where
@@ -49,7 +49,7 @@ pub fn process_text_sign(input: &str, key: &str, format: TextSigFormat) -> Resul
             signer.sign(&mut reader)?
         }
     };
-    let signed = URL_SAFE_NO_PAD.encode(&signed);
+    let signed = URL_SAFE_NO_PAD.encode(signed);
     Ok(signed)
 }
 pub fn process_text_verify(
@@ -71,12 +71,11 @@ pub fn process_text_verify(
         }
     }
 }
-pub fn process_text_generate(format:TextSigFormat)->Result<Vec<Vec<u8>>>{
-    match format{
-        TextSigFormat::Blake3=>Blake3::generate(),
-        TextSigFormat::Ed25519=>Ed25519Signer::generate()
+pub fn process_text_generate(format: TextSigFormat) -> Result<Vec<Vec<u8>>> {
+    match format {
+        TextSigFormat::Blake3 => Blake3::generate(),
+        TextSigFormat::Ed25519 => Ed25519Signer::generate(),
     }
-
 }
 impl TextSign for Blake3 {
     fn sign(&self, reader: &mut dyn Read) -> Result<Vec<u8>> {
@@ -91,7 +90,7 @@ impl TextVerify for Blake3 {
         let mut buf = Vec::new();
         reader.read_to_end(&mut buf)?;
         // 这个写法存在生命周期问题 let hash=blake3::hash(&buf).as_bytes();
-        let binding = blake3::keyed_hash(&self.key,&buf);
+        let binding = blake3::keyed_hash(&self.key, &buf);
         let hash = binding.as_bytes();
         Ok(hash == sig)
     }
@@ -175,35 +174,34 @@ impl Ed25519Verifier {
     //     Self::try_new(&key)
     // }
 }
-impl KeyGenerator for Blake3{
-    fn generate()->Result<Vec<Vec<u8>>> {
-        let key=process_genpass(32, false, false, false, false)?;
-        
-        let key=key.as_bytes().to_vec();
+impl KeyGenerator for Blake3 {
+    fn generate() -> Result<Vec<Vec<u8>>> {
+        let key = process_genpass(32, false, false, false, false)?;
+
+        let key = key.as_bytes().to_vec();
         Ok(vec![key])
     }
 }
-impl KeyGenerator for Ed25519Signer{
-    fn generate()->Result<Vec<Vec<u8>>> {
-        let mut csprng=OsRng;
-        let signing_key=SigningKey::generate(&mut csprng);
-        let public_key=signing_key.verifying_key().to_bytes().to_vec();
-        let signing_key=signing_key.to_bytes().to_vec();
-        Ok(vec![signing_key,public_key])
+impl KeyGenerator for Ed25519Signer {
+    fn generate() -> Result<Vec<Vec<u8>>> {
+        let mut csprng = OsRng;
+        let signing_key = SigningKey::generate(&mut csprng);
+        let public_key = signing_key.verifying_key().to_bytes().to_vec();
+        let signing_key = signing_key.to_bytes().to_vec();
+        Ok(vec![signing_key, public_key])
     }
 }
 #[cfg(test)]
-mod tests{
+mod tests {
     use super::*;
     #[test]
-    fn test_blake3_sign_verify(){
-        let key="./fixtures/blake3.txt";
-        let blake3=Blake3::load(key).unwrap();
-        let data=b"hello,world";
-        let sig=blake3.sign(&mut &data[..]).unwrap();
-        println!("sig:{}",URL_SAFE_NO_PAD.encode(&sig));
-        let verified=blake3.verify(&mut &data[..], &sig).unwrap();
+    fn test_blake3_sign_verify() {
+        let key = "./fixtures/blake3.txt";
+        let blake3 = Blake3::load(key).unwrap();
+        let data = b"hello,world";
+        let sig = blake3.sign(&mut &data[..]).unwrap();
+        println!("sig:{}", URL_SAFE_NO_PAD.encode(&sig));
+        let verified = blake3.verify(&mut &data[..], &sig).unwrap();
         assert!(verified);
-
     }
 }

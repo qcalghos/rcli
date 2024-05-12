@@ -6,8 +6,8 @@ use axum::{
     Router,
 };
 use std::{net::SocketAddr, path::PathBuf, sync::Arc};
-use tracing::{info, warn};
 use tower_http::services::ServeDir;
+use tracing::{info, warn};
 
 #[derive(Debug)]
 struct HttpServeState {
@@ -17,9 +17,9 @@ struct HttpServeState {
 pub async fn process_http_serve(path: PathBuf, port: u16) -> Result<()> {
     let addr = SocketAddr::from(([127, 0, 0, 1], port));
     info!("Serving {:?} on :{}", path, addr);
-    let state = HttpServeState { path:path.clone() };
+    let state = HttpServeState { path: path.clone() };
     //use tower_http
-    let dir_service=ServeDir::new(path)
+    let dir_service = ServeDir::new(path)
         .append_index_html_on_directories(true)
         .precompressed_gzip()
         .precompressed_br()
@@ -59,7 +59,6 @@ async fn file_handler(
         }
     }
 }
-
 
 #[cfg(test)]
 mod tests {

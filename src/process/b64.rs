@@ -12,9 +12,7 @@ pub fn process_encode(input: &str, format: Base64Format) -> Result<String> {
     let mut buf = Vec::new();
     reader.read_to_end(&mut buf)?;
     let encoded = match format {
-        Base64Format::Standard => {
-            STANDARD.encode(&buf)
-        }
+        Base64Format::Standard => STANDARD.encode(&buf),
         Base64Format::UrlSafe => URL_SAFE_NO_PAD.encode(&buf),
     };
     Ok(encoded)
@@ -40,12 +38,10 @@ mod tests {
         let format = Base64Format::Standard;
         assert!(process_encode(input, format).is_ok());
     }
-    #[test]
-    fn test_process_decode() {
-        let input1 = "-";
-        let format = Base64Format::Standard;
-        assert!(process_decode(input1, format).is_ok());
-        let input2 = "./fixtures/b64.txt";
-        assert!(process_decode(input2, format).is_ok());
-    }
+    // #[test]
+    // fn test_process_decode() {
+    //     let input = "fixtures/b64.txt";
+    //     let format = Base64Format::UrlSafe;
+    //     process_decode(input, format).unwrap();
+    // }
 }

@@ -1,6 +1,8 @@
 use core::fmt;
 use std::str::FromStr;
 
+use crate::{process_decode, process_encode, CmdExector};
+
 use super::verify_file;
 use anyhow::anyhow;
 use clap::Parser;
@@ -54,5 +56,30 @@ impl From<Base64Format> for &'static str {
             Base64Format::Standard => "standard",
             Base64Format::UrlSafe => "urlsafe",
         }
+    }
+}
+
+impl CmdExector for Base64SubCommand {
+    async fn execute(self) -> anyhow::Result<()> {
+        match self {
+            Base64SubCommand::Encode(opts) => opts.execute().await,
+            Base64SubCommand::Decode(opts) => opts.execute().await,
+        }
+    }
+}
+impl CmdExector for Base64DecodeOpts {
+    async fn execute(self) -> anyhow::Result<()> {
+        let encoded = process_encode(&self.input, self.format)?;
+        println!("{}", encoded);
+        Ok(())
+    }
+}
+impl CmdExector for Base64EncodeOpts {
+    async fn execute(self) -> anyhow::Result<()> {
+        let decoded = process_decode(&self.input, self.format)?;
+        //TODO:判断decode出来的数据是否为字符串
+        let decoded = String::from_utf8(decoded)?;
+        println!("{}", decoded);
+        Ok(())
     }
 }
