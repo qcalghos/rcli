@@ -6,11 +6,12 @@ mod text;
 
 use crate::CmdExector;
 
-pub use self::base64::Base64Format;
-pub use self::base64::Base64SubCommand;
+pub use self::base64::{Base64DecodeOpts, Base64EncodeOpts, Base64Format, Base64SubCommand};
 pub use self::csv::OutputFormat;
-pub use self::http::HttpSubCommand;
-pub use self::text::{TextSigFormat, TextSubCommand};
+pub use self::http::{HttpServeOpts, HttpSubCommand};
+pub use self::text::{
+    TextKeyGenerateOpts, TextSigFormat, TextSignOpts, TextSubCommand, TextVerifyOpts,
+};
 use self::{csv::CsvOpts, gen_pass::GenPassOpts};
 use ::clap::Parser;
 use std::path::Path;
